@@ -14,7 +14,8 @@ const styles = StyleSheet.create({
   }, 
 
   bottomContainer: {
-    paddingHorizontal: 28,
+    alignItems: "center",
+    // paddingHorizontal: 16,
     marginBottom: 40,
     width: "100%",
     marginTop: "auto", 
@@ -22,8 +23,8 @@ const styles = StyleSheet.create({
 
   footer: {
     textAlign: "center",
-    marginTop: 20,
-    fontSize: 18,
+    marginTop: 10,
+    fontSize: 14,
     color: "#444444",
   },
 

@@ -3,6 +3,7 @@ import { Image } from "expo-image";
 import Background from "@/assets/svg/onboardingbg.svg";
 import { Button } from "@/components/buttons";
 import {router} from "expo-router";
+import { Stack } from "expo-router";
 
 const styles = StyleSheet.create({
   
@@ -15,8 +16,8 @@ const styles = StyleSheet.create({
   }, 
 
   bottomContainer: {
-    paddingHorizontal: 16,
     alignItems: "center",
+    paddingHorizontal: 16,
     marginBottom: 40,
     width: "100%",
     marginTop: "auto", 
@@ -39,26 +40,22 @@ const styles = StyleSheet.create({
 export default function Index() {
   return (
     <View style={{ flex: 1 }}>
+    <Stack.Screen options={{ headerShown: false }} />
       <View>
           <Background />
-          <Image
-              source={require("@/assets/svg/onboarding.png")}
-              style={styles.logo}
-          />
+          
       </View>
      
 
        <View style={styles.bottomContainer}>
         <Button
-          title="Get Started"
+          title="Sign In"
           type="primary"
-          onPress={() => router.push("/signup")}
         />
-
         <Text style={styles.footer}>
-          Already Have Account?
-          <Text style={styles.login} onPress={() => router.push("/login")}>
-            Log In
+          Don't have an account?
+          <Text style={styles.login} onPress={() => router.push("/signup")}>
+            Sign Up
           </Text>
         </Text>
       </View>

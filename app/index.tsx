@@ -1,8 +1,7 @@
-import { Pressable, Text, View, StyleSheet} from "react-native";
+import { Text, View, StyleSheet} from "react-native";
 import { Image } from "expo-image";
 import Background from "@/assets/svg/onboardingbg.svg";
 import { Button } from "@/components/buttons";
-import { router } from "expo-router";
 
 const styles = StyleSheet.create({
   
@@ -51,7 +50,6 @@ export default function Index() {
         <Button
           title="Get Started"
           type="primary"
-          // onPress={() => router.push("/profile")}
         />
 
         <Text style={styles.footer}>

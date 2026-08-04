@@ -25,11 +25,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginBottom: 40,
     width: "100%",
-    marginTop: "auto",
+    marginTop: 46,
   },
 
   formcontainer: {
     padding: 18,
+    gap: 26,
+    marginTop: 50 ,
   },
 
   headercontainer: {
@@ -118,9 +120,8 @@ export default function Signup() {
           <InputField label="Email Address" value={email} onChangeText={setEmail}/>
           <InputField label="Password" value={password} onChangeText={setPassword} secureTextEntry/>
         </View>
-      </SafeAreaView>
 
-      <View style={styles.bottomContainer}>
+        <View style={styles.bottomContainer}>
         <Button
           title="Create Account"
           type="primary"
@@ -134,6 +135,7 @@ export default function Signup() {
           </Text>
         </Text>
       </View>
+      </SafeAreaView>
     </View>
   );
 }

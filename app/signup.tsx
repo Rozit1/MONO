@@ -1,141 +1,137 @@
-import { Text, View, StyleSheet } from "react-native";
-import { Image } from "expo-image";
+import { StyleSheet, Text, View } from "react-native";
+
 import Background from "@/assets/svg/onboardingbg.svg";
-import { Button } from "@/components/buttons";
-import { router } from "expo-router";
-import { Stack } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { BackButton } from "@/components/back-button";
+import { Button } from "@/components/buttons";
 import { InputField } from "@/components/inputfield";
-import { useState } from "react";
 import { signUp } from "@/services/firebase";
+import { Link, useRouter } from "expo-router";
+import { useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 
 const styles = StyleSheet.create({
-  logo: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
-
-  bottomContainer: {
-    alignItems: "center",
-    paddingHorizontal: 16,
-    marginBottom: 40,
-    width: "100%",
-    marginTop: 46,
-  },
-
-  formcontainer: {
-    padding: 18,
-    gap: 26,
-    marginTop: 50 ,
-  },
-
-  headercontainer: {
-    paddingHorizontal: 14,
-  },
-
-  headertitle: {
-    fontSize: 24,
-    fontWeight: "600",
-    fontFamily: "Inter",
-  },
-
-  headersubtitle: {
-    fontSize: 14,
-    fontWeight: "500",
-    color: "rgba(90, 140, 136, 1)",
-    fontFamily: "Inter",
-  },
-
-  footer: {
-    textAlign: "center",
-    marginTop: 10,
-    fontSize: 14,
-    color: "#444444",
-  },
-
-  login: {
-    color: "#4D9D8F",
-    fontWeight: "600",
-  },
+    container: {
+        flex: 1,
+        backgroundColor: "#fff",
+    },
+    actionContainer: {
+        padding: 18,
+    },
+    logo: {
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+    },
+    formContainer: {
+        padding: 18,
+        gap: 24,
+    },
+    headerContainer: {
+        paddingHorizontal: 14,
+    },
+    headerTitle: {
+        fontSize: 24,
+        fontWeight: '600',
+        color: '#000000',
+    },
+    headerSubtitle: {
+        fontSize: 14,
+        fontWeight: '500',
+        color: '#5A8C88',
+        marginTop: 8,
+    },
+    loginContainer: {
+        alignItems: "center",
+        marginTop: 8,
+        flexDirection: "row",
+        justifyContent: 'center',
+    },
+    loginText: {
+        color: "#444444",
+        fontSize: 16,
+    },
+    loginTextLink: {
+        color: "#438883",
+        fontSize: 16,
+        textDecorationLine: "underline",
+    },
 });
 
 export default function Signup() {
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+    const [fullName, setFullName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState('');
+    const [fieldsError, setFieldsError] = useState({
+        fullName: '',
+        email: '',
+        password: '',
+    });
 
-  const handleSignup = () => {
-    setIsLoading(true);
-    signUp(email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        router.push("/login");
-        Toast.show({
-          type: "success",
-          text1: "Account created successfully!",
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-        setError(error.message);
-        Toast.show({
-          type: "error",
-          text1: "Error creating account",
-          text2: error.message,
-        });
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  };
+    const router = useRouter();
 
-  return (
-    <View style={{ flex: 1 }}>
-      <Stack.Screen options={{ headerShown: false }} />
-      <View style={styles.logo}>
-        <Background />
-      </View>
+    const handleSignUp = async () => {
+        try {
+            if (!fullName || !email || !password) {
+                setFieldsError({
+                    fullName: !fullName ? 'Full name is required' : '',
+                    email: !email ? 'Email is required' : '',
+                    password: !password ? 'Password is required' : '',
+                });
+                return;
+            }
+            setFieldsError({
+                fullName: '',
+                email: '',
+                password: '',
+            });
+            setIsLoading(true);
+            await signUp(fullName, email, password);
+            router.push('/login');
+            Toast.show({
+                type: 'success',
+                text1: 'Account created successfully',
+            })
+        } catch (error) {
+            console.log(error);
+            setError(error as string);
+            Toast.show({
+                type: 'error',
+                text1: error as string,
+            })
+        } finally {
+            setIsLoading(false);
+        }
+    }
 
-      <SafeAreaView>
-        <View>
-          <BackButton />
-          <View style={styles.headercontainer}>
-            <Text style={styles.headertitle}>Create</Text>
-            <Text style={styles.headertitle}>Account</Text>
-            <Text style={styles.headersubtitle}>
-              Join to start tracking your finances
-            </Text>
-          </View>
+
+    return (
+        <View style={styles.container}>
+            <View style={styles.logo}>
+                <Background />
+            </View>
+            <SafeAreaView>
+                <BackButton />
+                <View style={styles.headerContainer}>
+                    <Text style={styles.headerTitle}>Create</Text>
+                    <Text style={styles.headerTitle}>Account ✨</Text>
+                    <Text style={styles.headerSubtitle}>Join to start tracking your finances</Text>
+                </View>
+                <View style={styles.formContainer}>
+                    <InputField label="Full Name" placeholder="Enter your full name" value={fullName} onChangeText={setFullName} error={fieldsError.fullName} />
+                    <InputField label="Email" autoCapitalize="none" placeholder="Enter your email" value={email} onChangeText={setEmail} error={fieldsError.email} />
+                    <InputField label="Password" autoCapitalize="none" placeholder="Enter your password" value={password} onChangeText={setPassword} secureTextEntry error={fieldsError.password} />
+                    <Button title="Create Account" type="primary" onPress={handleSignUp} disabled={isLoading}/>
+                    <View style={styles.loginContainer}>
+                        <Text style={styles.loginText}>Already have account? </Text>
+                        <Link href="/login" style={styles.loginTextLink}>Log In</Link>
+                    </View>
+                </View>
+            </SafeAreaView>
         </View>
-
-        <View style={styles.formcontainer}>
-          <InputField label="Full Name" value={fullName} onChangeText={setFullName}/>
-          <InputField label="Email Address" value={email} onChangeText={setEmail}/>
-          <InputField label="Password" value={password} onChangeText={setPassword} secureTextEntry/>
-        </View>
-
-        <View style={styles.bottomContainer}>
-        <Button
-          title="Create Account"
-          type="primary"
-          onPress={() => handleSignup()}
-        />
-
-        <Text style={styles.footer}>
-          Already have an account?
-          <Text style={styles.login} onPress={() => router.push("/login")}>
-            Log In
-          </Text>
-        </Text>
-      </View>
-      </SafeAreaView>
-    </View>
-  );
+    );
 }

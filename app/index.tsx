@@ -2,7 +2,7 @@ import { Text, View, StyleSheet} from "react-native";
 import { Image } from "expo-image";
 import Background from "@/assets/svg/onboardingbg.svg";
 import { Button } from "@/components/buttons";
-import {router} from "expo-router";
+import {router, useRouter} from "expo-router";
 
 const styles = StyleSheet.create({
   
@@ -37,6 +37,7 @@ const styles = StyleSheet.create({
 })
 
 export default function Index() {
+  const router = useRouter();
   return (
     <View style={{ flex: 1 }}>
       <View>

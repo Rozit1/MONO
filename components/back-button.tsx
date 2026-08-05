@@ -12,11 +12,11 @@ const styles = StyleSheet.create({
     },
 });
 
-export function BackButton(){
+export function BackButton({ type = 'dark' }: { type?: 'light' | 'dark' }) {
     const router = useRouter();
     return (
         <TouchableOpacity style={styles.container} onPress={() => router.back()}>
-            <Ionicons name="chevron-back-outline" size={24} color={"black"} />
+            <Ionicons name="chevron-back-outline" size={24} color={type == "dark" ? "black" : "white"} />
         </TouchableOpacity>
     )
 }

@@ -15,7 +15,7 @@ export default function HomeLayout() {
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="homepage"
         options={{
           title: "Home",
           tabBarIcon: ({ color, size }) => (
@@ -24,7 +24,7 @@ export default function HomeLayout() {
         }}
       />
       <Tabs.Screen
-        name="expense"
+        name="transaction"
         options={{
           title: "Expense",
           tabBarIcon: ({ color, size }) => (

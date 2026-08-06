@@ -1,39 +1,59 @@
-import { StyleSheet, Text, TextInput, TextInputProps, View } from "react-native"
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { useState } from "react";
+import { StyleSheet, Text, TextInput, TextInputProps, TouchableOpacity, View } from "react-native";
 
-type Props = TextInputProps & {
+export type InputFieldProps = TextInputProps & {
     label?: string
     error?: string
-    title?: string
 }
 
-export function InputField({ label, style: inputStyle, error,title, ...props }: Props) {
+export function InputField({ label, style: inputStyle, error, secureTextEntry, ...props }: InputFieldProps) {
+    const [isPasswordVisible, setIsPasswordVisible] = useState(secureTextEntry);
     return (
-        <View>
-            {label && <Text style={styles.title}>{label}</Text>}
-            <TextInput style={[styles.input, inputStyle]} {...props} />
+        <View style={styles.container}>
+            <Text style={styles.label}>{label}</Text>
+            <View style={[styles.inputContainer]}>
+                <TextInput style={[styles.input, inputStyle]} secureTextEntry={isPasswordVisible} {...props} />
+                {secureTextEntry && (
+                    <TouchableOpacity style={styles.inputSuffix} onPress={() => setIsPasswordVisible(!isPasswordVisible)}>
+                        <Ionicons name={isPasswordVisible ? "eye-off" : "eye"} size={20} color="#5A8C88" />
+                    </TouchableOpacity>
+                )}
+            </View>
             {error && <Text style={styles.error}>{error}</Text>}
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    input: {
+    container: {
+        gap: 6,
+    },
+    inputContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
         borderWidth: 1,
-        borderColor: "rgba(200, 237, 234, 1)",
-        backgroundColor: "rgba(240, 250, 249, 1)",
-        height: 48,
+        borderColor: '#C8EDEA',
         borderRadius: 8,
-        padding: 10,
+        backgroundColor: '#F0FAF9',
+    },
+    input: {
+        flex: 1,
+        minHeight: 45,
+        paddingHorizontal: 8,
+    },
+    inputSuffix: {
+        flex: 0,
+        paddingHorizontal: 8,
     },
     error: {
         color: 'red',
         fontSize: 12,
     },
-    
-    title: {
-        fontSize: 12,
-        fontWeight: "700",
-        color: "rgba(90, 140, 136, 1)",
-        fontFamily: "Inter",
+    label: {
+        fontSize: 13,
+        fontWeight: 'bold',
+        color: '#5A8C88',
     },
 })

@@ -1,16 +1,18 @@
-// Import the functions you need from the SDKs you need
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { FirebaseApp, getApp, getApps, initializeApp } from "firebase/app";
-import { Auth, createUserWithEmailAndPassword, getAuth, initializeAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { Auth, browserLocalPersistence, createUserWithEmailAndPassword, getAuth, initializeAuth, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { Firestore, initializeFirestore } from "firebase/firestore";
+import { Platform } from "react-native";
 
 const firebaseAuth = require("firebase/auth");
-const persistence = typeof firebaseAuth?.getReactNativePersistence === "function" ? firebaseAuth.getReactNativePersistence(ReactNativeAsyncStorage) : undefined;
+const persistence = Platform.OS === 'web'
+  ? browserLocalPersistence
+  : typeof firebaseAuth?.getReactNativePersistence === "function"
+    ? firebaseAuth.getReactNativePersistence(ReactNativeAsyncStorage)
+    : undefined;
 
-console.log("persistence", typeof firebaseAuth?.getReactNativePersistence, typeof persistence);
+    console.log('persistence', persistence, typeof window, typeof firebaseAuth?.getReactNativePersistence);
 
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyBYDuu-P7hrH2IklRorKS36i8SPcyW0UmI",
   authDomain: "mono-rojit.firebaseapp.com",
@@ -21,8 +23,27 @@ const firebaseConfig = {
   measurementId: "G-YK1BL82890"
 };
 
+// Update the firestore rules to allow read and write access to logged in user's data
+//rules_version = '2';
+
+// service cloud.firestore {
+//   match /databases/{database}/documents {
+
+//     match /users/{userId} {
+//       allow read, write: if request.auth != null && request.auth.uid == userId;
+
+//       match /transactions/{transactionId} {
+//         allow read, write: if request.auth != null
+//                             && request.auth.uid == userId;
+//       }
+//     }
+//   }
+// }
+
 let app: FirebaseApp | null = null;
 let auth: Auth;
+let firestore: Firestore;
+
 // Initialize Firebase
 export function initializeFirebase() {
   app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
@@ -32,16 +53,18 @@ export function initializeFirebase() {
     console.log("Error initializing auth", error);
     auth = getAuth(app);
   }
-  return { app, auth };
+  firestore = initializeFirestore(app, {})
+  return { app, auth, firestore };
 }
 
 
 export function signUp(fullName: string, email: string, password: string) {
   return createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
-    // return updateProfile(userCredential.user, { displayName: fullName }).then(() => {
+    return updateProfile(userCredential.user, { displayName: fullName }).then(() => {
       return userCredential;
     });
-  };
+  });
+}
 
 export function signIn(email: string, password: string) {
   return signInWithEmailAndPassword(auth, email, password);
@@ -55,4 +78,4 @@ export function signOut() {
   return signOut();
 }
 
-export { app, auth };
+export { app, auth, firestore };

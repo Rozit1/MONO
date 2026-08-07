@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Mono",
-    "slug": "Mono",
+    "slug": "mono",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -19,7 +19,8 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.rojitchaulagain.mono"
     },
     "web": {
       "output": "static",
@@ -43,6 +44,13 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "c2872579-a84d-454c-b571-2d5b108f8aac"
+      }
+    },
+    "owner": "rojitchaulagain"
   }
 }

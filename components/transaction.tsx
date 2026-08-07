@@ -1,6 +1,10 @@
 import { Transaction } from "@/services/transaction";
 import dayjs from "dayjs";
-import { StyleSheet, Text, View } from "react-native";
+import { Href, useRouter } from "expo-router";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+
+
+
 
 
 const styles = StyleSheet.create({
@@ -49,18 +53,40 @@ const styles = StyleSheet.create({
 })
 
 
-export function TransactionItem({ transaction }: { transaction: Transaction }) {
+export function TransactionItem({
+    transaction,
+    onPress,
+}: {
+    transaction: Transaction;
+    onPress?: () => void;
+}) {
+    const router = useRouter();
+
+    const handlePress = () => {
+        if (onPress) {
+            onPress();
+        } else if (transaction?.id) {
+            router.push(`/(home)/transaction/${transaction.id}` as Href);
+        }
+    };
+
     return (
-        <View style={styles.transactionItem} >
-            <View style={styles.transactionItemHeader} >
+        <TouchableOpacity
+            style={styles.transactionItem}
+            onPress={handlePress}
+            activeOpacity={0.7}
+        >
+            <View style={styles.transactionItemHeader}>
                 <Text style={styles.transactionItemName}>{transaction.name}</Text>
                 <Text style={styles.transactionItemDate}>{formatDisplayDate(transaction.date)}</Text>
             </View>
-            <View style={styles.transactionItemAmount} >
-                <Text style={transaction.type === 'income' ? styles.incomeAmount : styles.expenseAmount}>{transaction.type === 'income' ? '+' : '-'}$ {transaction.amount}</Text>
+            <View style={styles.transactionItemAmount}>
+                <Text style={transaction.type === 'income' ? styles.incomeAmount : styles.expenseAmount}>
+                    {transaction.type === 'income' ? '+' : '-'}$ {transaction.amount}
+                </Text>
             </View>
-        </View>
-    )
+        </TouchableOpacity>
+    );
 }
 
 export function formatDisplayDate(date: Date | string) {

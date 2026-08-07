@@ -186,6 +186,33 @@ export function useTransactions() {
   return { transactions, loading, error, loadTransactions };
 }
 
+export function useTransaction(id: string) {
+  const [transaction, setTransaction] = useState<Transaction | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  const loadTransaction = useCallback(async () => {
+    if (!id) return;
+    try {
+      setLoading(true);
+      const data = await getTransaction(id);
+      setTransaction(data);
+      setError(null);
+    } catch (err) {
+      console.error("Error loading transaction", err);
+      setError(err as Error);
+    } finally {
+      setLoading(false);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    loadTransaction();
+  }, [loadTransaction]);
+
+  return { transaction, loading, error, loadTransaction };
+}
+
 const useDashboardStats = () => {
   const transactions = useTransactions();
 
@@ -209,3 +236,4 @@ const useDashboardStats = () => {
 };
 
 export default useDashboardStats;
+

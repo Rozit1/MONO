@@ -4,8 +4,10 @@ import {
     ActivityIndicator,
     Pressable,
     PressableProps,
+    StyleProp,
     StyleSheet,
     Text,
+    TextStyle,
     View,
     ViewStyle,
 } from "react-native";
@@ -14,6 +16,8 @@ type Props = PressableProps & {
     title: string;
     loading?: boolean;
     type?: "primary" | "secondary" | "outline" | "danger" | "disabled";
+    textStyle?: StyleProp<TextStyle>;
+    buttonStyle?: StyleProp<ViewStyle>;
 };
 
 type VariantConfig = {
@@ -77,7 +81,7 @@ const styles = StyleSheet.create({
     },
 });
 
-export function Button({ title, type = "primary", style, loading, ...props }: Props) {
+export function Button({ title, type = "primary", style, buttonStyle, textStyle, loading, ...props }: Props) {
     const config = variantConfig[type];
     const isFlat = type === "outline" || type === "disabled";
 
@@ -94,7 +98,7 @@ export function Button({ title, type = "primary", style, loading, ...props }: Pr
         >
             {
                 loading ? (
-                    <View style={styles.button} >
+                    <View style={[styles.button, buttonStyle]} >
                         <ActivityIndicator size="small" color='black' />
                     </View>
                 ) :
@@ -107,9 +111,10 @@ export function Button({ title, type = "primary", style, loading, ...props }: Pr
                                     backgroundColor:
                                         type === "disabled" ? config.gradient[0] : "transparent",
                                 },
+                                buttonStyle,
                             ]}
                         >
-                            <Text style={[styles.text, { color: config.textColor }]}>
+                            <Text style={[styles.text, { color: config.textColor }, textStyle]}>
                                 {title}
                             </Text>
                         </View>
@@ -118,13 +123,13 @@ export function Button({ title, type = "primary", style, loading, ...props }: Pr
                             colors={config.gradient}
                             start={{ x: 0.5, y: 0 }}
                             end={{ x: 0.5, y: 1 }}
-                            style={[styles.button, { borderColor: config.borderColor }]}
+                            style={[styles.button, { borderColor: config.borderColor }, buttonStyle]}
                         >
-                            <Text style={[styles.text, { color: config.textColor }]}>
+                            <Text style={[styles.text, { color: config.textColor }, textStyle]}>
                                 {title}
                             </Text>
                         </LinearGradient>
                     )}
         </Pressable>
     );
-}
+}
